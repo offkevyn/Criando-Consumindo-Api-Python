@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscando da API</title>
+
+    <Style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100;8..144,200;8..144,300;8..144,400;8..144,500;8..144,600&family=Zen+Loop&display=swap');
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Roboto Flex', sans-serif;
+            color: #f9b2d3;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body
+        {
+            background-color: #070d22;
+            background-attachment: fixed;
+            background-image: linear-gradient(to bottom right, #480CA8, #3A0CA3, #3F37C9, #4361EE);
+        }
+
+        main {
+            margin: 0 auto;
+            max-width: 400px;
+            position: relative;
+            top: 50%;
+            /* etc */
+            -webkit-transform: translateY(-50%);
+
+             --cor_bg: #F72585;
+            
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur( 9px );
+            -webkit-backdrop-filter: blur( 9px );
+            border: 1px solid var(--cor_bg);
+            box-shadow: -1px -1px 20px 0.5px var(--cor_bg);
+
+            --x-pos: 0;
+            --y-angle: calc(var(--x-pos)*5deg);
+
+            --y-pos: 0;
+            --x-angle: calc(var(--y-pos)*5deg);
+
+            transform: 
+            perspective(170px)
+            rotateY(var(--y-angle))
+            rotateX(var(--x-angle))
+            translateY(-50%);
+        }
+
+        h1{
+            text-align: center;
+            margin-top: 0;
+            color: #fad1e4;
+            text-shadow: 1px 1px 20px #f9b2d3;
+        }
+
+        li::marker{
+            color: #F72585;
+        }
+
+        span{
+            color: #f8dfea;
+            text-decoration: underline;
+        }
+
+    </Style>
+</head>
+
+<body>
+
+        <main>
+            <h1>offKevyn</h1>
+            <ul>
+                <li>
+                    Número de Sobreviventes: <span id="numSobreviventes"></span>
+                </li>
+                <li>
+                    Número de homens: <span id="numHomens"></span>
+                </li>
+                <li>
+                    Número de mulheres: <span id="numMulheres"></span>
+                </li>
+                <li>
+                    Número de crianças: <span id="numCriancas"></span>
+                </li>
+                <li>
+                    Total faturado com passagens: <span id="totalFaturado"></span>
+                </li>
+                <li>
+                    Média da idade: <span id="mediaIdade"></span>
+                </li>
+    
+            </ul>
+        </main>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script >
+        info = document.getElementsByTagName("main")[0];
+
+        var {width, height} = info.getBoundingClientRect();
+        info.addEventListener('mousemove', function (e)
+        {
+            info.style.transition = '0s';
+            info.style.setProperty('--x-pos', (e.offsetX/width) - 0.8);
+            info.style.setProperty('--y-pos', (e.offsetY/width) - 0.8);
+        });
+
+        info.addEventListener('mouseout', function ()
+        {
+            info.style.transition = '0.5s';
+            info.style.setProperty('--x-pos', 0);
+            info.style.setProperty('--y-pos', 0);
+        });
+
+        var url = 'http://127.0.0.1:5000';
+        
+        requisicaoAjax('/numSobreviventes', document.getElementById("numSobreviventes"));
+        requisicaoAjax('/numHomens', document.getElementById("numHomens"));
+        requisicaoAjax('/numMulheres', document.getElementById("numMulheres"));
+        requisicaoAjax('/numCriancas', document.getElementById("numCriancas"));
+        requisicaoAjax('/totalPassagens', document.getElementById("totalFaturado"));
+        requisicaoAjax('/mediaIdade', document.getElementById("mediaIdade"));
+        
+        function requisicaoAjax(caminho, elemeto) {
+            $.ajax({
+            url: url + caminho,
+            success: function(data) {
+                console.log(data);
+                if(data.Total % 1 === 0)
+                    elemeto.innerText = data.Total;
+                else
+                elemeto.innerText = data.Total.toFixed(2);
+            }
+            });
+
+        }
+    </script>
+</body>
+
+</html>
